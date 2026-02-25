@@ -2,11 +2,9 @@
 .model small
 .stack 100h
 
-;AREA PARA DECLARACAO DE VARIAVEIS
+;area para declarar
 .data
 
-
-;PROGRAMA PRINCIPAL
 .code
 main:
     mov ax, @data
@@ -18,8 +16,8 @@ main:
     sub ax,bx    ; ax = ax - bx
     
 sairPrograma:
- ; Finaliza o programa
- mov ah, 4Ch  ; Funcao de saida
- int 21h      ; Chama a interrupcao para sair  
+ mov ah, 4Ch 
+ int 21h     
+
 
 end main   
