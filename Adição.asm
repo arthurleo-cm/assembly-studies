@@ -14,8 +14,8 @@ main:
     add ax,bx    ; ax = ax + bx
     
 sairPrograma:
- ; Finaliza o programa
  mov ah, 4Ch  
  int 21h      
 
 end main   
+
