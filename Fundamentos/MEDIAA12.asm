@@ -1,3 +1,8 @@
+;IMPLEMENTE, EM ASSEMBLER, UMA APLICAÇÃODE SOFTWARE PARA CALCULAR A MÉDIAARITMÉTICA DE 5 NÚMEROS:
+
+
+
+
 ;BASE
 .model small
 .stack 100h
@@ -33,5 +38,6 @@ sairPrograma:
  ; Finaliza o programa
  mov ah, 4Ch  ; Funcao de saida
  int 21h      ; Chama a interrupcao para sair  
+
 
 end main   
