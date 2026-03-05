@@ -1,39 +1,29 @@
 ;IMPLEMENTE, EM ASSEMBLER, UMA APLICAÇÃO DE SOFTWARE PARA CALCULAR A MÉDIA ARITMÉTICA DE 5 NÚMEROS:
 
-
-
-
 ;BASE
 .model small
 .stack 100h
 
 .data
-
+NOTA1 dw 8
+NOTA2 dw 6
+SOMA dw 0
+MEDIA dw 0
 
 .code
 main:
     mov ax, @data
     mov ds, ax
     
-    mov ax,9
-    mov bx,10
+    mov ax,NOTA1
+    mov bx,NOTA2
     add ax,bx
-    
-    mov bx,8
-    add ax,bx
-    
-    mov cx,4
-    add ax,cx
-    
-    mov cx,10
-    add ax,cx
-    
+    mov SOMA,ax
     mov dx,0
-    mov bx,5
-    div bx
-    
-      
-    
+    mov bx,2
+    div bx ;ax = ax / bx
+    mov MEDIA,ax
+
 sairPrograma:
  ; Finaliza o programa
  mov ah, 4Ch  ; Funcao de saida
@@ -41,5 +31,6 @@ sairPrograma:
 
 
 end main   
+
 
 
