@@ -52,7 +52,7 @@ loop:
      mov ah,0Ah  
      int 10h 
      
-     
+  
      ; COLOCANDO A RAQUETE
      mov ah,02h
     mov bh,paginaVideo
@@ -72,6 +72,21 @@ loop:
      mov tecla,al
      mov scanCode,ah
      
+      ;POSICIONAR O CURSO
+      mov bh,paginaVideo
+      mov dh,cursorLin
+      mov dl,cursorCol
+      mov ah,02h   
+      int 10h
+
+      mov al," "
+     mov bh,paginaVideo
+     mov cx,caracterRepeticao
+     mov ah,0Ah  
+     int 10h 
+     
+     
+     
      ;RAQUETE E CONTROLE
      ;apagar a raquete
      
@@ -81,25 +96,22 @@ loop:
     mov dl,raqueteCol
     int 10h
     
-    mov al,""
+    mov al," "
      mov bh,paginaVideo
      mov cx,raqueteTam
      mov bl,0h
      mov ah,0Ah  
      int 10h 
-    
-    
      
+     ;MOVER RAQUETE ESQUERDA
      cmp tecla,","
      jnz desvioraquete001
      cmp raqueteCol,0
      je  desvioraquete001
      dec raqueteCol
      
-     
-
-     
  desvioraquete001:
+     ;MOVER RAQUETE DIREITA
      cmp tecla,"."
      jnz desvioraquete002
      cmp raqueteCol,60
@@ -109,17 +121,49 @@ loop:
      
  desvioraquete002:    
      
-     
-     
-     
-     
-     
-     
-    mov ah,10h 
-    int 16h
-    mov tecla,al
-    mov scanCode,ah
-  
+         ;TESTAR COLISAO BOLINHA RAQUETE 
+    mov al,cursorLin
+    mov bl,raqueteLin
+    dec bl
+    cmp al,bl
+    jne desvio5
+    mov al,cursorCol
+    mov bl,raqueteCol
+    cmp al,bl
+    jb desvio5
+    
+     mov al,cursorCol
+     mov bh,0
+    mov bl,raqueteCol
+    add bx,raqueteTam
+    cmp al,bl
+    ja desvio5
+    mov dlin,-1
+    
+desvio5:
+    
+    
+        ;TESTAR COLISAO BOLINHA RAQUETE 
+    mov al,cursorLin
+    mov bl,raqueteLin
+    inc bl
+    cmp al,bl
+    jne desvio6
+    mov al,cursorCol
+    mov bl,raqueteCol
+    cmp al,bl
+    jb desvio6
+    
+     mov al,cursorCol
+     mov bh,0
+    mov bl,raqueteCol
+    add bx,raqueteTam
+    cmp al,bl
+    ja desvio6
+    mov dlin,1
+    
+desvio6:
+     ;MAQUINA DE MOVIMENTO DA BOLINHA
     mov al,cursorCol
     mov bl,dcol
     add al,bl
@@ -130,31 +174,43 @@ loop:
     add al,bl
     mov cursorLin,al
    
+    ;COMPARAR LIMITES
+    ;LIMITE LINHA INFERIOR
     cmp cursorLin,23
     jbe desvio1
     mov dlin,-1
     
     desvio1:  
    
+    ;LIMITE COLUNA DIREITA
     cmp cursorCol,78
     jbe desvio2
     mov dcol, -1
     
     desvio2:
     
+    ;LIMITE  COLUNA ESQUEDA
     cmp cursorCol,1
     jae desvio3
     mov dcol, 1
     
 desvio3:
+    ;LIMITE LINHA 0
     cmp cursorLin,1
     jae desvio4
     mov dlin,1
     
 desvio4:
     
+    
+    
+    
+    
+    
 jmp loop
   
+
+
 sairPrograma:
 
  mov ah, 4Ch  
