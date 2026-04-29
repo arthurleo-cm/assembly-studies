@@ -308,7 +308,7 @@ loop:
     jnz desvioraquete020
      cmp raqueteCol,60
      je desvioraquete020 
-     inc raqueteLin ;aqui
+     inc raqueteLin2 ;aqui
 
  desvioraquete020:
      
