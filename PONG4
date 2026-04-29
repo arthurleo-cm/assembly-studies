@@ -1,0 +1,353 @@
+;BASE
+.model small
+.stack 100h
+
+.data
+cursorLin db 2
+cursorCol db 2
+paginaVideo db 0
+MSG db "*$"
+tecla db 0
+scanCode db 0
+caracterRepeticao dw 1
+dlin db 1
+dcol db 1
+
+; RAQUETE 1
+raqueteCol db 63 
+raqueteLin db 12
+raqueteTam dw 10
+
+; RAQUETE 2
+raquete2Col db 13
+raquete2Lin db 12
+raquete2Tam dw 10   
+
+cont db 0
+
+linhaSUP db 0
+colunaSUP db 0
+
+linhaINF db 24
+colunaINF db 0
+
+linhaSESQ db 1
+colunaSESQ db 0
+
+linhaIESQ db 24
+colunaIESQ db 0
+
+linhaSDIR db 0
+colunaSDIR db 79
+
+linhaIDIR db 24
+colunaIDIR db 79
+
+.code
+
+main:
+    mov ax, @data
+    mov ds, ax
+    
+    mov cursorLin,5
+    mov cursorCol,10
+    
+    mov dcol,1
+    mov dlin,1   
+
+; ================= BORDA =================
+loopX1:
+    mov ah,02h
+    mov bh,paginaVideo
+    mov dh,linhaSUP
+    mov dl,colunaSUP
+    int 10h
+
+    mov al,"_"
+    mov bh,paginaVideo
+    mov bl,1eh
+    mov cx,1
+    mov ah,0ah
+    int 10h
+
+    inc colunaSUP
+    inc cont
+    cmp cont,80
+    jne loopX1
+
+loopX2:    
+    mov ah,02h
+    mov bh,paginaVideo
+    mov dh,linhaINF
+    mov dl,colunaINF
+    int 10h
+
+    mov al,"_"
+    mov bh,paginaVideo
+    mov bl,1eh
+    mov cx,1
+    mov ah,0ah
+    int 10h
+
+    inc colunaINF
+    inc cont
+    cmp cont,76
+    jne loopX2
+  
+loopX3:
+    mov ah,02h
+    mov bh,paginaVideo
+    mov dh,linhaSESQ
+    mov dl,colunaSESQ
+    int 10h
+    
+    mov al,"|"
+    mov bh,paginaVideo
+    mov bl,1eh
+    mov cx,1
+    mov ah,0ah
+    int 10h
+    
+    inc linhaSESQ
+    cmp linhaSESQ,7
+    jne loopX3
+
+loopX4:
+    mov ah,02h
+    mov bh,paginaVideo
+    mov dh,linhaIESQ
+    mov dl,colunaIESQ
+    int 10h
+
+    mov al,"|"
+    mov bh,paginaVideo
+    mov bl,1eh
+    mov cx,1
+    mov ah,0ah
+    int 10h
+    
+    dec linhaIESQ
+    cmp linhaIESQ,14
+    jne loopX4
+    
+loopX5:
+    mov ah,02h
+    mov bh,paginaVideo
+    mov dh,linhaSDIR
+    mov dl,colunaSDIR
+    int 10h
+    
+    mov al,"|"
+    mov bh,paginaVideo
+    mov bl,1eh
+    mov cx,1
+    mov ah,0ah
+    int 10h
+    
+    inc linhaSDIR
+    cmp linhaSDIR,7
+    jne loopX5
+     
+loopX6:
+    mov ah,02h
+    mov bh,paginaVideo
+    mov dh,linhaIDIR
+    mov dl,colunaIDIR
+    int 10h
+
+    mov al,"|"
+    mov bh,paginaVideo
+    mov bl,1eh
+    mov cx,1
+    mov ah,0ah
+    int 10h
+    
+    dec linhaIDIR
+    cmp linhaIDIR,14
+    jne loopX6
+
+; ================= LOOP PRINCIPAL =================
+loop:
+
+; ----- DESENHAR BOLA -----
+    mov bh,paginaVideo
+    mov dh,cursorLin
+    mov dl,cursorCol
+    mov ah,02h   
+    int 10h
+
+    mov al,"*"
+    mov bh,paginaVideo
+    mov cx,caracterRepeticao
+    mov ah,0Ah  
+    int 10h 
+
+; ----- RAQUETE 1 -----
+    mov cx,raqueteTam
+    mov dl,raqueteCol
+    mov dh,raqueteLin
+
+loop_r1:
+    push cx
+    mov ah,02h
+    mov bh,paginaVideo
+    int 10h
+
+    mov ah,0Ah
+    mov al,"|"
+    mov bh,paginaVideo
+    mov bl,31h
+    mov cx,1
+    int 10h
+    pop cx
+    inc dh
+    loop loop_r1
+
+; ----- RAQUETE 2 -----
+    mov cx,raquete2Tam
+    mov dl,raquete2Col
+    mov dh,raquete2Lin
+
+loop_r2:
+    push cx
+    mov ah,02h
+    mov bh,paginaVideo
+    int 10h
+
+    mov ah,0Ah
+    mov al,"|"
+    mov bh,paginaVideo
+    mov bl,2Fh
+    mov cx,1
+    int 10h
+    pop cx
+    inc dh
+    loop loop_r2
+
+; ----- INPUT -----
+    mov ah,10h
+    int 16h
+    mov tecla,al
+
+; ----- APAGAR BOLA -----
+    mov bh,paginaVideo
+    mov dh,cursorLin
+    mov dl,cursorCol
+    mov ah,02h   
+    int 10h
+
+    mov al," "
+    mov bh,paginaVideo
+    mov cx,1
+    mov ah,0Ah  
+    int 10h 
+
+; ----- APAGAR RAQUETE 1 -----
+    mov cx,raqueteTam
+    mov dl,raqueteCol
+    mov dh,raqueteLin
+
+loop_apaga1:
+    push cx
+    mov ah,02h
+    mov bh,paginaVideo
+    int 10h
+
+    mov ah,0Ah
+    mov al," "
+    mov bh,paginaVideo
+    mov cx,1
+    int 10h
+    pop cx
+    inc dh
+    loop loop_apaga1
+
+; ----- APAGAR RAQUETE 2 -----
+    mov cx,raquete2Tam
+    mov dl,raquete2Col
+    mov dh,raquete2Lin
+
+loop_apaga2:
+    push cx
+    mov ah,02h
+    mov bh,paginaVideo
+    int 10h
+
+    mov ah,0Ah
+    mov al," "
+    mov bh,paginaVideo
+    mov cx,1
+    int 10h
+    pop cx
+    inc dh
+    loop loop_apaga2
+
+; ----- CONTROLE RAQUETE 1 -----
+    cmp tecla,"o"
+    jnz r1_down
+    cmp raqueteLin,2
+    je r1_down
+    dec raqueteLin
+
+r1_down:
+    cmp tecla,"l"
+    jnz r2_up
+    cmp raqueteLin,20
+    je r2_up
+    inc raqueteLin
+
+; ----- CONTROLE RAQUETE 2 -----
+r2_up:
+    cmp tecla,"w"
+    jnz r2_down
+    cmp raquete2Lin,2
+    je r2_down
+    dec raquete2Lin
+
+r2_down:
+    cmp tecla,"s"
+    jnz move_ball
+    cmp raquete2Lin,20
+    je move_ball
+    inc raquete2Lin
+
+; ----- MOVIMENTO BOLA -----
+move_ball:
+    mov al,cursorCol
+    add al,dcol
+    mov cursorCol,al
+    
+    mov al,cursorLin
+    add al,dlin
+    mov cursorLin,al
+
+; ----- LIMITES -----
+    cmp cursorLin,22
+    jbe ok1
+    mov dlin,-1
+ok1:
+
+    cmp cursorLin,2
+    jae ok2
+    mov dlin,1
+ok2:
+
+    cmp cursorCol,77
+    jbe ok3
+    mov dcol,-1
+ok3:
+
+    cmp cursorCol,2
+   jb muda
+jmp loop
+
+muda:
+mov dcol,1
+
+jmp loop
+
+sairPrograma:
+    mov ah,4Ch  
+    int 21h     
+
+end main
